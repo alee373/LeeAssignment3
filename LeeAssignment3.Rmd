@@ -1,0 +1,79 @@
+---
+title: "LeeAssignment3"
+author: "Andrew Lee"
+date: "2025-11-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+library(ggplot2) # visualization package
+library(dplyr) # provides functions for summarizing and data manipulation
+library(readr) # provides function for reading in data via .CSV file
+library(janitor) # provides utility functions for data cleaning and manipulation
+library(ggthemes) # provides a collection of themes for customizing the appearance of plots created with ggplot2
+library(plotly) # allows interactive chart
+
+```
+
+
+```{r}
+
+tip_data <- read.csv("tip.csv")
+
+```
+
+```{r}
+
+head(tip_data)
+summary(tip_data)
+str(tip_data)
+cat("\n--- Missing Values Check ---\n")
+print(colSums(is.na(tip_data)))
+
+```
+
+```{r}
+
+cat("\n--- Scatter Plot of Tip vs. Total Bill ---\n")
+ggplot(tip_data, aes(x = total_bill, y = tip)) +
+  geom_point(color = "blue", alpha = 0.6) +
+  geom_smooth(method = "lm", col = "red") + # Add a linear trend line
+  labs(title = "Tip Amount vs. Total Bill",
+       x = "Total Bill ($)",
+       y = "Tip Amount ($)") +
+  theme_minimal()
+
+```
+
+```{r}
+
+tip_model <- lm(tip ~ total_bill, data = tip_data)
+
+cat("\n--- Regression Model Object Created ---\n")
+print(tip_model)
+
+```
+
+```{r}
+
+cat("\n--- Model Summary and Evaluation ---\n")
+model_summary <- summary(tip_model)
+print(model_summary)
+
+```
+
+```{r}
+
+new_bills <- data.frame(total_bill = c(10.00, 25.00, 40.00))
+predicted_tips <- predict(tip_model, newdata = new_bills)
+prediction_results <- new_bills %>%
+  mutate(predicted_tip = predicted_tips)
+cat("\n--- Model Predictions ---\n")
+print(prediction_results)
+
+```
